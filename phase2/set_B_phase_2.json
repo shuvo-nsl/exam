@@ -1,0 +1,60 @@
+{
+    "image_a.jpg":{
+        "image_name": "image_a.jpg",
+        "fruits":[
+            {
+                "name": "apple",
+                "total_unit_bought": "10",
+                "unit_price": "100",
+                "total_price": "1000",
+                "tax": "5",
+                "final_price": "1060"
+            },
+            {
+                "name": "jack-fruit",
+                "total_unit_bought": "5",
+                "unit_price": "50",
+                "total_price": "350",
+                "tax": "5",
+                "final_price": "350"
+            },
+            {
+                "name": "banana",
+                "total_unit_bought": "12",
+                "unit_price": "10",
+                "total_price": "119",
+                "tax": "10",
+                "final_price": "130"
+            }
+        ] 
+    },
+    "image_b.jpg":{
+        "image_name": "image_b.jpg",
+        "fruits":[
+            {
+                "name": "apple",
+                "total_unit_bought": "100",
+                "unit_price": "100",
+                "total_price": "1000",
+                "tax": "5",
+                "final_price": "10060"
+            },
+            {
+                "name": "grape",
+                "total_unit_bought": "1000",
+                "unit_price": "5",
+                "total_price": "5000",
+                "tax": "10",
+                "final_price": "50002"
+            },
+            {
+                "name": "banana",
+                "total_unit_bought": "24",
+                "unit_price": "10",
+                "total_price": "240",
+                "tax": "10",
+                "final_price": "250"
+            }
+        ] 
+    }
+}

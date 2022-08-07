@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    
+   
+        <title>JS Tool</title>
+</head>
+
+<body>
+    <!-- Navbar Part -->
+
+    <div class="topbar table">
+        <div class="table-cell left">
+            <span>JS Tool </span>
+        </div>
+        <div class="table-cell file-name">
+            <strong>File : </strong>
+        </div>
+
+        <div class="table-cell file-name"></div>
+
+        <div class="right table-cell">
+            <span class="import-btn" title="Import">
+                <span>import</span>
+            </span>
+            <span class="export-btn" title="Export">
+                <span>Export</span>
+
+            </span>
+            <input type="file" id="import-file" style="display:none;" accept="application/JSON">
+        </div>
+
+    </div>
+
+    <div class="main-body"> </div>
+
+
+    <div class="pagination">
+
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+        integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
+        crossorigin="anonymous"></script>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script>
+        //Variable declares
+var inputs
+var inputValue
+var jsonData
+var fileName
+// var correction = []
+var previous
+var iterateCount = 0
+var tableHeader
+var tableDataCount = 0
+var targetEditedDiv
+let paginationDiv = document.querySelector("pagination");
+var imageWithDiv=[]
+var pagebtn=[]
+//DOM Tag Get
+let importBtn = document.querySelector('.import-btn')
+let jsonUpload = document.getElementById('import-file')
+let showContent = document.querySelector('.main-body')
+var inputs = document.querySelectorAll("input-field");
+var buttons = document.querySelectorAll(".butn")
+var exportBtn = document.querySelector('.export-btn')
+// inputs = Array.from(inputs);
+// buttons = Array.from(buttons)
+// console.log(inputs);
+//eventListener
+importBtn.addEventListener('click', fileImport)
+jsonUpload.addEventListener('change', jsonFileUpload)
+exportBtn.addEventListener('click', download)
+
+
+//Functions
+
+//Import Button Functions
+function fileImport() {
+    document.getElementById("import-file").click();
+}
+
+//Uploading Json file and showing the contents
+function jsonFileUpload(e) {
+    var target = e.target || e.srcElement;
+    var file = target.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    fileName = target.files[0].name;
+    var reader = new FileReader();
+
+    if (fileName.length >= 20) {
+        document.querySelector('.file-name').innerHTML = "<strong>File : </strong>" + fileName.slice(0,
+            10) + "....." + fileName.slice(-10);
+    } else {
+        document.querySelector('.file-name').innerHTML = "<strong>File : </strong>" + fileName;
+    }
+
+    reader.onload = function (e) {
+        contents = e.target.result
+        contents = contents.replace("None", "null");
+        jsonData = JSON.parse(contents);
+
+        // saving keys value for table header name
+        tableHeader = Object.keys(jsonData['image_a.jpg'].fruits[0])
+
+        
+        for (const data in jsonData) {
+            iterateCount++
+
+            // creating individual div for each image and it's table
+            var individualImageDiv = document.createElement('div')
+            showContent.appendChild(individualImageDiv)
+
+            // Setting each div classname
+            //This div is parent div for each image
+            individualImageDiv.className = 'input' + iterateCount
+
+            //s
+            imageWithDiv.push(`input${iterateCount}`);
+
+            //Creating Image from json
+            var imageShow = document.createElement('img')
+            imageShow.src = `Phase_2_imgs/${jsonData[data].image_name}`
+            imageShow.alt = "image"
+            imageShow.style.height = '200px'
+            imageShow.style.marginBottom = '30px'
+            individualImageDiv.appendChild(imageShow)
+
+            //Creating Table from Json of each image
+            //This block is creating table heading
+            var imageContent = jsonData[data].fruits
+            var table = document.createElement('table')
+            table.className = 'table'
+            individualImageDiv.appendChild(table)
+            var tableHead = document.createElement('thead')
+            table.appendChild(tableHead)
+            var tableHeadRow = document.createElement('tr')
+            tableHead.appendChild(tableHeadRow)
+            var tableBody = document.createElement('tbody')
+            table.appendChild(tableBody)
+
+            //stored Table header key mapping th tag
+            tableHeader.map((header, ind) => {
+                var headTag = document.createElement('th')
+                headTag.setAttribute('scope', 'col')
+                headTag.innerHTML = header
+                tableHeadRow.appendChild(headTag)
+            })
+
+            // this block is creating table data row
+            imageContent.map((content, ind) => {
+                // console.log("row Content", content);
+
+                var tableBodyRow = document.createElement('tr')
+                tableBodyRow.id = `${jsonData[data].image_name}_tablerow_${ind}`
+                tableBody.appendChild(tableBodyRow)
+                for (const insideContent in content) {
+                    tableDataCount++
+                    var tableData = document.createElement('td')
+                    tableData.setAttribute('data-type','tabledata')
+                    tableData.id = `${jsonData[data].image_name}-tabledata-tablerow-${ind}-${tableDataCount}-${tableHeader[tableDataCount-1]}`
+                    tableData.innerHTML = content[insideContent]
+                    tableBodyRow.appendChild(tableData)
+                }
+                tableDataCount = 0
+            })
+
+             //pagination button
+        let paginationButton = document.createElement("button");
+        paginationButton.className=`button${iterateCount}`
+        paginationButton.innerHTML=`${iterateCount}`
+        document.body.appendChild(paginationButton)
+        pagebtn.push(`button${iterateCount}`)
+            
+            
+        }
+ //s--
+ let paginationButton = document.getElementsByTagName("button");
+ console.log("pagination btn:"+pagebtn);
+ //
+ console.log("imgwith div: "+imageWithDiv);
+ let firstDIv = document.querySelector(`.${imageWithDiv[0]}`);
+ let secondDiv = document.querySelector(`.${imageWithDiv[1]}`);
+
+ firstDIv.classList.add("hide");
+
+ const buttonOne = document.querySelector(`.${pagebtn[0]}`);
+ const buttonTwo = document.querySelector(`.${pagebtn[1]}`);
+
+ buttonOne.disabled = true;
+
+
+ buttonOne.addEventListener("click", (e)=> {
+     if(e.target.getAttribute("disabled") === true){
+        console.log("true");
+         buttonOne.disabled = false
+     }
+     else{
+         buttonOne.disabled = true
+     }
+     if(firstDIv.classList.contains("hide")){
+         firstDIv.classList.remove("hide")
+         buttonOne.disabled = false;
+     }else{
+
+         firstDIv.classList.add("hide")
+         secondDiv.classList.remove("hide")
+         buttonOne.disabled = true
+         buttonTwo.disabled = false
+     }
+ })
+ buttonTwo.addEventListener("click", (e)=> {
+     if(e.target.getAttribute("disabled") == true){
+         buttonTwo.disabled = false
+     }
+     else{
+         buttonTwo.disabled = true
+     }
+     if(secondDiv.classList.contains("hide")){
+         secondDiv.classList.remove("hide")
+         buttonTwo.disabled = true;
+     }else{
+         firstDIv.classList.remove("hide")
+         secondDiv.classList.add("hide")
+         buttonTwo.disabled = true
+         buttonOne.disabled = false
+     }
+
+ })
+
+    };
+    reader.readAsText(file);
+
+}
+
+function addEvent(eventName, htmlElement, callback) {
+    if (htmlElement != null) {
+        if (htmlElement.addEventListener) {
+            htmlElement.addEventListener(eventName, callback, false);
+        } else if (htmlElement.attachEvent) {
+            htmlElement.attachEvent("on" + eventName, callback);
+        }
+    }
+}
+
+// if double Click the field will be editable
+addEvent("dblclick",document,function(e){
+    if(e.target.getAttribute('data-type')=== 'tabledata'){
+       targetEditedDiv = document.getElementById(e.target.id)
+       targetEditedDiv.contentEditable = true
+    }
+})
+
+document.addEventListener('click', function(event) {
+    var isClickInsideElement = targetEditedDiv.contains(event.target);
+    if (!isClickInsideElement) {
+        var correctionObjectInfo = targetEditedDiv.id.split('-')
+        // console.log(targetEditedDiv.innerText);
+        
+        jsonData[correctionObjectInfo[0]].fruits[correctionObjectInfo[3]][correctionObjectInfo[5]]=targetEditedDiv.innerText
+        
+        // console.log("Updated Value",jsonData[correctionObjectInfo[0]].fruits[correctionObjectInfo[3]][correctionObjectInfo[5]]);
+
+        
+    }
+});
+// addEvent("")
+
+
+// for downloading updated json
+function download() {
+    if (fileName === undefined) {
+
+    } else {
+        saveFile(fileName + '_' + Date.now() + '.json', JSON.stringify(jsonData));
+        // location.reload();
+    }
+
+}
+
+function saveFile(filename, text) {
+    var blob = new Blob([text], {
+        type: 'text/json'
+    });
+    if (window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveBlob(blob, filename);
+    } else {
+        var elem = window.document.createElement('a');
+        elem.href = window.URL.createObjectURL(blob);
+        elem.download = filename;
+        document.body.appendChild(elem);
+        elem.click();
+        document.body.removeChild(elem);
+    }
+}
+
+    </script>
+
+</body>
+
+</html>
